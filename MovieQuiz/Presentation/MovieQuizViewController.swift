@@ -161,15 +161,22 @@ final class MovieQuizViewController: UIViewController {
                 title: result.title,
                 message: result.text,
                 preferredStyle: .alert)
-        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
             
-            // заново показываем первый вопрос
-            let firstQuestion = self.questions[self.currentQuestionIndex]
-            let viewModel = self.convert(model: firstQuestion)
-            self.show(quiz: viewModel)
-        }
+            let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in // слабая ссылка на self
+                guard let self = self else { return } // разворачиваем слабую ссылку
+
+                self.currentQuestionIndex = 0
+                self.correctAnswers = 0
+
+                let firstQuestion = self.questions[self.currentQuestionIndex]
+                let viewModel = self.convert(model: firstQuestion)
+                self.show(quiz: viewModel)
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in // слабая ссылка на self
+                guard let self = self else { return } // разворачиваем слабую ссылку
+                self.showNextQuestionOrResults()
+            }
         
         alert.addAction(action)
         
