@@ -7,5 +7,5 @@
 
 import Foundation
 protocol AlertPresenterProtocol: AnyObject  {
-    func showAlert(alert: AlertModel)
+    func showAlert(for model: AlertModel)
 }

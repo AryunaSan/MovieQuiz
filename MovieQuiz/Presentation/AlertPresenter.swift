@@ -12,7 +12,7 @@ final class AlertPresenter: AlertPresenterProtocol {
     init(viewController: UIViewController? = nil) {
         self.viewController = viewController
     }
-    func showAlert(alert result: AlertModel) {
+    func showAlert(for result: AlertModel) {
         let alert = UIAlertController(
             title: result.title,
             message: result.message,

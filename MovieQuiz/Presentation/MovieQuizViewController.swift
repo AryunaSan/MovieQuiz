@@ -11,6 +11,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
+    private var statisticService: StatisticService?
     
     private var alertPresenter: AlertPresenterProtocol?
     
@@ -21,21 +22,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //let firstQuestion = questions[currentQuestionIndex]
-        
+                
         let questionFactory = QuestionFactory()
         questionFactory.delegate = self
         self.questionFactory = questionFactory
-        /*
-         if let firstQuestion = questionFactory.requestNextQuestion() {
-         currentQuestion = firstQuestion
-         let viewModel = convert(model: firstQuestion)
-         show(quiz: viewModel)
-         */
+        
         questionFactory.requestNextQuestion()
         
         alertPresenter = AlertPresenter(viewController: self)
+        
+        statisticService = StatisticServiceImplementation()
     }
     // MARK: - QuestionFactoryDelegate
     
@@ -124,15 +120,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
-            //let nextQuestion = questions[currentQuestionIndex]
-            /*
-             if let nextQuestion = questionFactory.requestNextQuestion() {
-             currentQuestion = nextQuestion
-             let viewModel = convert(model: nextQuestion)
-             
-             show(quiz: viewModel)
-             }
-             */
+           
             questionFactory?.requestNextQuestion()
         }
     }
@@ -145,9 +133,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // приватный метод для показа результатов раунда квиза
     // принимает вью модель QuizResultsViewModel и ничего не возвращает
     private func show(quiz result: QuizResultsViewModel) {
+        guard let statisticService = statisticService else {
+            return
+        }
+        statisticService.store(correct: correctAnswers, total: questionsAmount)
+        let message = result.text +
+        "\nКоличество сыгранных квизов: \(statisticService.gamesCount)"+"\nРекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total)(\(statisticService.bestGame.date.dateTimeString))"+"\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
         let alertModel = AlertModel(
             title: result.title,
-            message: result.text,
+            message: message,
             buttonText: result.buttonText,
             completion: { [weak self] in
                 guard let self = self else { return }
@@ -156,41 +150,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.questionFactory?.requestNextQuestion()
             }
         )
-        alertPresenter?.showAlert(alert: alertModel)
+        alertPresenter?.showAlert(for: alertModel)
             }
-        //            let alert = UIAlertController(
-        //                title: result.title,
-        //                message: result.text,
-        //                preferredStyle: .alert)
-        //
-        //            let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in // слабая ссылка на self
-        //                guard let self = self else { return } // разворачиваем слабую ссылку
-        //
-        //                self.currentQuestionIndex = 0
-        //                self.correctAnswers = 0
-        //
-        //               // let firstQuestion = self.questions[self.currentQuestionIndex]
-        //        /*
-        //                if let firstQuestion = self.questionFactory.requestNextQuestion() {
-        //                    self.currentQuestion = firstQuestion
-        //                    let viewModel = self.convert(model: firstQuestion)
-        //
-        //                    self.show(quiz: viewModel)
-        //         */
-        //                self.questionFactory?.requestNextQuestion()
-        //
-        //            }
-        //
-        //            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in // слабая ссылка на self
-        //                guard let self = self else { return } // разворачиваем слабую ссылку
-        //                self.showNextQuestionOrResults()
-        //            }
-        //
-        //        alert.addAction(action)
-        //
-        //        self.present(alert, animated: true, completion: nil)
-        //
-        //
-        //    }
     }
 
