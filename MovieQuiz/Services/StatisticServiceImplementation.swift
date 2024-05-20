@@ -18,16 +18,16 @@ final class StatisticServiceImplementation: StatisticService {
         get {
             userDefaults.integer(forKey: Keys.total.rawValue)
         }
-            set {
-                userDefaults.set(newValue, forKey: Keys.total.rawValue)
+        set {
+            userDefaults.set(newValue, forKey: Keys.total.rawValue)
         }
     }
     var correct: Int {
         get {
             userDefaults.integer(forKey: Keys.correct.rawValue)
         }
-            set {
-                userDefaults.set(newValue, forKey: Keys.correct.rawValue)
+        set {
+            userDefaults.set(newValue, forKey: Keys.correct.rawValue)
         }
     }
     
@@ -56,18 +56,21 @@ final class StatisticServiceImplementation: StatisticService {
             userDefaults.set(data, forKey: Keys.bestGame.rawValue)
         }
     }
-    
-    var totalAccuracy: Double {return Double(correct)/10*Double(total)*100}
+    var totalAccuracy: Double {
+        let totalCorrect = userDefaults.integer(forKey: Keys.correct.rawValue)
+        let totalQuestions = userDefaults.integer(forKey: Keys.total.rawValue)
+        return Double(totalCorrect) / Double(totalQuestions) * 100
+            }
     
     func store(correct count: Int, total amount: Int) {
         correct += count
         total += amount
         gamesCount += 1
-
+        
         let newRecord = GameResult(correct: count, total: amount, date: Date())
-
+        
         if newRecord.isBetterThan(bestGame) {
-                    bestGame = newRecord
-                }
+            bestGame = newRecord
+        }
     }
 }

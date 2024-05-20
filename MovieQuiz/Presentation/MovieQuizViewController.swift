@@ -5,6 +5,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var textLabel: UILabel!
+    @IBOutlet private weak var noButton: UIButton!
+    @IBOutlet private weak var yesButton: UIButton!
     
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
@@ -14,7 +16,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var statisticService: StatisticService?
     
     private var alertPresenter: AlertPresenterProtocol?
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -22,7 +23,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         let questionFactory = QuestionFactory()
         questionFactory.delegate = self
         self.questionFactory = questionFactory
@@ -51,8 +52,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Actions
     
-    @IBAction private func noButton(_ sender: UIButton) {
-        // let currentQuestion = questions[currentQuestionIndex]
+    @IBAction private func noButtonClicked1(_ sender: UIButton) {
+        noButton.isEnabled = false
         guard let currentQuestion = currentQuestion else {
             return
         }
@@ -60,7 +61,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
-    @IBAction private func yesButton(_ sender: UIButton) {
+    @IBAction private func yesButtonClicked1(_ sender: UIButton) {
+        yesButton.isEnabled = false
         // let currentQuestion = questions[currentQuestionIndex]
         guard let currentQuestion = currentQuestion else {
             return
@@ -70,7 +72,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
-    
     // MARK: - Private functions
     
     // приватный метод конвертации, который принимает моковый вопрос и возвращает вью модель для главного экрана
@@ -111,6 +112,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // приватный метод, который содержит логику перехода в один из сценариев
     // метод ничего не принимает и ничего не возвращает
     private func showNextQuestionOrResults() {
+        noButton.isEnabled = true
+        yesButton.isEnabled = true
+        
         if currentQuestionIndex == questionsAmount - 1 {
             let text = "Ваш результат: \(correctAnswers)/10"
             let viewModel = QuizResultsViewModel(
@@ -120,15 +124,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
-           
+            
             questionFactory?.requestNextQuestion()
         }
     }
     // константа с кнопкой для системного алерта
-    let alert = UIAlertController(
-        title: "Этот раунд окончен!",
-        message: "Ваш результат ???",
-        preferredStyle: .alert)
+//    let alert = UIAlertController(
+//        title: "Этот раунд окончен!",
+//        message: "Ваш результат ???",
+//        preferredStyle: .alert)
     
     // приватный метод для показа результатов раунда квиза
     // принимает вью модель QuizResultsViewModel и ничего не возвращает
@@ -151,6 +155,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             }
         )
         alertPresenter?.showAlert(for: alertModel)
-            }
     }
+}
 
