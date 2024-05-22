@@ -60,7 +60,7 @@ final class StatisticServiceImplementation: StatisticService {
         let totalCorrect = userDefaults.integer(forKey: Keys.correct.rawValue)
         let totalQuestions = userDefaults.integer(forKey: Keys.total.rawValue)
         return Double(totalCorrect) / Double(totalQuestions) * 100
-            }
+    }
     
     func store(correct count: Int, total amount: Int) {
         correct += count

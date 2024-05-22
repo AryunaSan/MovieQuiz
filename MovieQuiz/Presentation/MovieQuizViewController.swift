@@ -31,7 +31,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         questionFactory?.loadData()
         alertPresenter = AlertPresenter(viewController: self)
         questionFactory?.requestNextQuestion()
-
+        
     }
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
