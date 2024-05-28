@@ -6,12 +6,14 @@
 //
 
 import UIKit
+
 final class AlertPresenter: AlertPresenterProtocol {
     
     weak var viewController: UIViewController?
     init(viewController: UIViewController? = nil) {
         self.viewController = viewController
     }
+        
     func showAlert(for result: AlertModel) {
         let alert = UIAlertController(
             title: result.title,
@@ -23,6 +25,7 @@ final class AlertPresenter: AlertPresenterProtocol {
         }
         alert.addAction(action)
         viewController? .present(alert, animated: true, completion: nil)
-        
+        alert.view.accessibilityIdentifier = "Game results"
     }
+    
 }

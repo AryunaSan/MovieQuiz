@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 protocol StatisticService {
     var gamesCount: Int { get }
     var bestGame: GameResult { get }
