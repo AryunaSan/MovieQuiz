@@ -8,6 +8,27 @@ import UIKit
 final class MovieQuizPresenter {
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
+    var currentQuestion: QuizQuestion?
+    weak var viewController: MovieQuizViewController?
+
+    func yesButtonClicked() {
+           guard let currentQuestion = currentQuestion else { // ОШИБКА КОМПИЛЯЦИИ 1: `currentQuestion` не определён
+               return
+           }
+           
+           let givenAnswer = true
+           
+        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer) // ОШИБКА КОМПИЛЯЦИИ 2: метод `showAnswerResult` не определён
+       }
+    func noButtonClicked() {
+            guard let currentQuestion = currentQuestion else {
+                return
+            }
+            
+            let givenAnswer = false
+            
+            viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        }
     
     func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1

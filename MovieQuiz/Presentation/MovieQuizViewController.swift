@@ -11,7 +11,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     private var correctAnswers = 0
     private var questionFactory: QuestionFactoryProtocol?
-    private var currentQuestion: QuizQuestion?
+    var currentQuestion: QuizQuestion?
     private var statisticService: StatisticService?
     private var alertPresenter: AlertPresenterProtocol?
     private let presenter = MovieQuizPresenter()
@@ -22,7 +22,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Lifestyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        presenter.viewController = self
+
         imageView.layer.cornerRadius = 20
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         
@@ -35,6 +36,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresenter = AlertPresenter(viewController: self)
         
         questionFactory?.requestNextQuestion()
+
     }
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -53,23 +55,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Actions
     @IBAction private func noButtonClicked1(_ sender: UIButton) {
         noButton.isEnabled = false
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = false
-        
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        presenter.currentQuestion = currentQuestion
+                presenter.noButtonClicked()
     }
     @IBAction private func yesButtonClicked1(_ sender: UIButton) {
         yesButton.isEnabled = false
-        // let currentQuestion = questions[currentQuestionIndex]
-        guard let currentQuestion = currentQuestion else {
-            return
+        presenter.currentQuestion = currentQuestion
+                presenter.yesButtonClicked()
         }
-        let givenAnswer = true
-        
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
     // MARK: - Private functions
     private func showLoadingIndicator() {
         activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
@@ -93,7 +86,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // приватный метод, который меняет цвет рамки
     // принимает на вход булевое значение и ничего не возвращает
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             correctAnswers += 1
         }
