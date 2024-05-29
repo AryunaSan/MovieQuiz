@@ -22,11 +22,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     var currentQuestionIndex: Int = 0
     var correctAnswers = 0
     var currentQuestion: QuizQuestion?
-    weak var viewController: MovieQuizViewController?
+    weak var viewController: MovieQuizViewControllerProtocol?
     var questionFactory: QuestionFactoryProtocol?
     private let statisticService: StatisticServiceImplementation!
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         
         statisticService = StatisticServiceImplementation()
