@@ -26,7 +26,6 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         showLoadingIndicator()
         
         alertPresenter = AlertPresenter(viewController: self)
-        
     }
     
     // MARK: - Actions
@@ -75,6 +74,8 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             alert.addAction(action)
             
             self.present(alert, animated: true, completion: nil)
+            
+            alert.view.accessibilityIdentifier = "Game results"
         }
     func hideLoadingIndicator() {
         activityIndicator.isHidden = true
